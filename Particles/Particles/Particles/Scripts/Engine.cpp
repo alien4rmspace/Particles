@@ -22,7 +22,7 @@ Engine::Engine() {
 	soundManager.loadBuffer("fire_sound", "Sounds/fire_sound.wav");
 	soundManager.loadBuffer("water_sound", "Sounds/water_sound.wav");
 	soundManager.loadBuffer("explosion_sound", "Sounds/explosion_sound.wav");
-	soundManager.loadBuffer("ghost_shriek_sound", "Sounds/ghost_shriek_sound.mp3");
+	soundManager.loadBuffer("ghost_shriek_sound", "Sounds/ghost_shriek_sound.wav");
 
 	// Initializing sprites and textures
 	textureManager.loadTexture("background", "Textures/background.png");

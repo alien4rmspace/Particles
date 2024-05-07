@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <cmath>
 using std::vector;
 using std::runtime_error;
 
