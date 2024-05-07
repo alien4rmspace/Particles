@@ -17,8 +17,15 @@ public:
 	void setAlive(bool alive) { this->alive = alive; };
 	bool isAlive() { return alive; };
 	bool isActive() { return active; };
+	int getSkillID() { return this->skillID; };
+	Sprite& getSprite() { return this->sprite; };
+
+	void toggleDebugMode(bool state) { debugMode = state; };
 protected:
 	Sprite sprite;
+	int skillID;
+
 	bool active = true;
 	bool alive = true;
+	bool debugMode = false;
 };

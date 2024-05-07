@@ -2,6 +2,7 @@
 
 Skill_3::Skill_3(Texture& texture, AnimationHandler& animationHandler, SoundManager& soundManager, Vector2f position, int skillID) : animationHandler(animationHandler), soundManager(soundManager) {
 	this->uniqueSkillID = "skill_3_" + to_string(skillID);
+	this->skillID = skillID;
 	this->sprite.setTexture(texture);
 	this->sprite.setPosition(position);
 	this->sprite.setOrigin(spriteOrigin);

@@ -9,7 +9,7 @@
 
 #define M_PI 3.1415926535897932384626433
 const float G = 1000;      //Gravity
-const float TTL = 5.0;  //Time To Live
+const float TTL = 3.0;  //Time To Live
 const float SCALE = 0.999;
 
 using namespace Matrices;
@@ -27,6 +27,9 @@ public:
   //Functions for unit testing
   bool almostEqual(double a, double b, double eps = 0.0001);
 
+  // Debug Mode
+  void toggleDebugMode(bool state) { debugMode = state; };
+
 private:
   float m_ttl;
   int m_numPoints;
@@ -38,6 +41,8 @@ private:
   Color m_color1;
   Color m_color2;
   Matrix m_A;
+
+  bool debugMode = false;
 
   ///rotate Particle by theta radians counter-clockwise
   ///construct a RotationMatrix R, left mulitply it to m_A

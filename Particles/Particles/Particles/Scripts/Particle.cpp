@@ -41,6 +41,11 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
 void Particle::draw(RenderTarget& target, RenderStates states) const {
   VertexArray lines(Triangles, this->m_numPoints + 1);
   Vector2f center = Vector2f(target.mapCoordsToPixel(this->m_centerCoordinate, this->m_cartesianPlane));
+
+  if (debugMode) {
+    center = m_centerCoordinate;
+  }   
+
   lines[0].position = center;
   lines[0].color = this->m_color1;
 

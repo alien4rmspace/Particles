@@ -7,10 +7,12 @@ public:
 
 	void update(float dt) override;
 	void draw(RenderTarget& target, RenderStates states) const override;
+	bool collide();
 	bool collide(FloatRect otherBounds);
 private:
 	AnimationHandler& animationHandler;
 	SoundManager& soundManager;
+	RectangleShape rectangle;
 	string uniqueSkillID;
 	IntRect rectSource = { 0, 0, 96, 112 };
 	Vector2f spriteOrigin = { 50, 50 };

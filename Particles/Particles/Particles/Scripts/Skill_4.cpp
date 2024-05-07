@@ -28,36 +28,45 @@ void Skill_4::update(float dt) {
 	this->bounds.top += skill4BufferTop;
 	this->bounds.width -= skill4BufferWidth;
 	this->bounds.height -= skill4BufferHeight;
+
+	if (debugMode) {
+		rectangle.setSize(Vector2f(this->bounds.width, this->bounds.height));
+		rectangle.setPosition(this->bounds.left, this->bounds.top);
+		rectangle.setFillColor(sf::Color::Transparent);
+		rectangle.setOutlineColor(sf::Color::Blue);
+		rectangle.setOutlineThickness(1.0f);
+	}
 }
 
 void Skill_4::draw(RenderTarget& target, RenderStates states) const {
 	target.draw(this->sprite);
+
+	if (debugMode) {
+		target.draw(this->rectangle);
+	}
 }
 
 bool Skill_4::collide(FloatRect otherBounds) {
 	if (this->bounds.intersects(otherBounds)) {
 		this->alive = false;
 		this->sprite.setPosition(0, 0);
-		//skill_4_active = false;
-		//ghost_active = false;
-		//ghost_vanish = true;
 
 		soundManager.playSound("explosion_sound");
 
-		//// Generate out particles on collision
-		//random_device rd;
-		//mt19937 gen(rd());
-		//uniform_real_distribution<float> pointsDis(25, 50);
-
-		//for (unsigned short i = 0; i < 10; i++) {
-		//	Particle particle(this->m_window, pointsDis(gen), Vector2i(lastClickedPosition));
-		//	this->m_particles.push_back(particle);
-		//}
 		return true;
 	}
 	// Check if sprite's y axis goes out of view.
 	if (this->sprite.getPosition().y < 0) {
 		this->alive = false;
+	}
+	return false;
+}
+
+bool Skill_4::collide() {
+	// Check if sprite's y axis goes out of view.
+	if (this->sprite.getPosition().y < 0) {
+		this->alive = false;
+		return true;
 	}
 	return false;
 }

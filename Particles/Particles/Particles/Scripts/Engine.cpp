@@ -95,6 +95,11 @@ void Engine::input() {
 				this->m_window.close();
 				break;
 			}
+			if (event.key.code == Keyboard::R) {
+				thread t(&Engine::loopThread, this);
+				t.detach();
+				break;
+			}
 			if (event.key.code == Keyboard::Space) {
 				if (debug_active == false) {
 					debug_active = true;
@@ -112,8 +117,7 @@ void Engine::input() {
 				cout << "mouse y: " << event.mouseButton.y << endl;
 
 				if (skill_3_active == false) {
-					int y = 495; // Fixed y position (floor level)
-					skillPosition = Vector2f(event.mouseButton.x, y);
+					skillPosition = Vector2f(event.mouseButton.x, SKILL_Y_VALUE);
 
 					unique_ptr<Skill_3> skill_3 = make_unique<Skill_3>(textureManager.getRef("skill_3"), animationHandler, soundManager, skillPosition, skill_id);
 					skill_id++;
@@ -204,7 +208,7 @@ void Engine::update(float dtAsSeconds) {
 		animationHandler.update("appear_ghost", dtAsSeconds);
 	}
 
-	// Check for collision
+	// idleGhost collision box
 	float idleGhostBufferLeft = 15.0f;
 	float idleGhostBufferTop = 0.0f;
 	float idleGhostBufferWidth = 32.f;
@@ -216,36 +220,25 @@ void Engine::update(float dtAsSeconds) {
 	idleGhostBounds.width -= idleGhostBufferWidth;
 	idleGhostBounds.height -= idleGhostBufferHeight;
 
-	if (spriteManager.getSprite("skill_4").getGlobalBounds().intersects(spriteManager.getSprite("idle_ghost").getGlobalBounds())) {
-		// Adjust out hit boxes
-		float skill4BufferTop = 25.0f;
-		float skill4BufferLeft = 43.0f;
-		float skill4BufferWidth = 95.0f;
-		float skill4BufferHeight = 85.0f;
-
-		FloatRect skill4Bounds = spriteManager.getSprite("skill_4").getGlobalBounds();
-		skill4Bounds.left += skill4BufferLeft;
-		skill4Bounds.top += skill4BufferTop;
-		skill4Bounds.width -= skill4BufferWidth;
-		skill4Bounds.height -= skill4BufferHeight;
-
-		// For Debugging Purposes
-		if (debug_active) {
-			square.setSize(Vector2f(skill4Bounds.width, skill4Bounds.height));
-			square.setPosition(skill4Bounds.left, skill4Bounds.top);
-			square.setFillColor(sf::Color::Transparent);
-			square.setOutlineColor(sf::Color::Blue);
-			square.setOutlineThickness(1.0f);
-
-			rectangle.setSize(Vector2f(idleGhostBounds.width, idleGhostBounds.height));
-			rectangle.setPosition(idleGhostBounds.left, idleGhostBounds.top);
-			rectangle.setFillColor(sf::Color::Transparent);
-			rectangle.setOutlineColor(sf::Color::Red);
-			rectangle.setOutlineThickness(1.0f);
+	// For Debugging Purposes
+	if (debug_active) {
+		for (auto& particle : m_particles) {
+			particle.toggleDebugMode(true);
 		}
+
+		rectangle.setSize(Vector2f(idleGhostBounds.width, idleGhostBounds.height));
+		rectangle.setPosition(idleGhostBounds.left, idleGhostBounds.top);
+		rectangle.setFillColor(sf::Color::Transparent);
+		rectangle.setOutlineColor(sf::Color::Red);
+		rectangle.setOutlineThickness(1.0f);
 	}
 
 	for (auto objectPtr = gameObjects.begin(); objectPtr != gameObjects.end();) {
+		// Random Number Generator
+		random_device rd;
+		mt19937 gen(rd());
+		uniform_real_distribution<float> pointsDis(25, 50);
+
 		if (auto skill3Ptr = dynamic_cast<Skill_3*>(objectPtr->get())) {
 			if (skill3Ptr->isActive()) {
 				skill_3_active = true;
@@ -254,7 +247,7 @@ void Engine::update(float dtAsSeconds) {
 			else if (!skill3Ptr->isActive() && skill3Ptr->isAlive()) {
 				skill_3_active = false;
 				skill3Ptr->setAlive(false);
-				auto skill4 = make_unique<Skill_4>(textureManager.getRef("skill_4"), animationHandler, soundManager, skillPosition, skill_id);
+				auto skill4 = make_unique<Skill_4>(textureManager.getRef("skill_4"), animationHandler, soundManager, skill3Ptr->getSprite().getPosition(), skill3Ptr->getSkillID());
 				gameObjects.push_back(move(skill4));
 
 				objectPtr = gameObjects.begin();
@@ -274,15 +267,24 @@ void Engine::update(float dtAsSeconds) {
 					ghost_active = false;
 					ghost_vanish = true;
 
-					// Generate particles
-					random_device rd;
-					mt19937 gen(rd());
-					uniform_real_distribution<float> pointsDis(25, 50);
-
+					// Generate particles on collide
 					for (unsigned short i = 0; i < 10; i++) {
 						Particle particle(this->m_window, pointsDis(gen), Vector2i(this->spriteManager.getSprite("idle_ghost").getPosition()));
 						this->m_particles.push_back(particle);
 					}
+				}
+
+				if (debug_active) {
+					skill4Ptr->toggleDebugMode(true);
+					if (skill4Ptr->collide()) {
+						for (unsigned short i = 0; i < 10; i++) {
+							Particle particle(this->m_window, pointsDis(gen), Vector2i(skill4Ptr->getSprite().getPosition()));
+							this->m_particles.push_back(particle);
+						}
+					}
+				}
+				else {
+					skill4Ptr->toggleDebugMode(false);
 				}
 			}
 			else {
@@ -353,7 +355,6 @@ void Engine::draw() {
 	if (debug_active) {
 		m_window.draw(debugText);
 		m_window.draw(rectangle);
-		m_window.draw(square);
 	}
 
 	this->m_window.display();
@@ -365,5 +366,26 @@ void Engine::followMouse(Sprite& sprite) {
 	}
 	else {
 		sprite.setScale(Vector2f(1, 1));
+	}
+}
+
+void Engine::ultimatePower() {
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_real_distribution<float> spawnXDis(50, 950);
+	for (unsigned short i = 0; i < 2; i++) {
+		int randomX = spawnXDis(gen);
+		skillPosition = Vector2f(randomX, SKILL_Y_VALUE);
+
+		unique_ptr<Skill_3> skill_3 = make_unique<Skill_3>(textureManager.getRef("skill_3"), animationHandler, soundManager, skillPosition, skill_id);
+		skill_id++;
+
+		gameObjects.push_back(move(skill_3));
+	}
+}
+void Engine::loopThread() {
+	for (unsigned short i = 0; i < 5; i++) {
+		ultimatePower();
+		this_thread::sleep_for(chrono::milliseconds(500));
 	}
 }
