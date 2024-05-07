@@ -1,0 +1,60 @@
+{
+    "sprites": [
+        {
+            "name": "idle_mage",
+            "content": "idle_mage",
+			"position": {"x": 480, "y": 475},
+            "origin": { "x": 28, "y": 33 },
+            "scale": { "x": 1, "y": 1}
+        },
+		{
+            "name": "skill_3_mage",
+            "content": "skill_3_mage",
+			"position": {"x": 480, "y": 475},
+            "origin": { "x": 28, "y": 33 },
+            "scale": { "x": 1, "y": 1}
+        },
+		{
+            "name": "skill_3",
+            "content": "skill_3",
+			"position": {"x": 250, "y": 285},
+            "origin": { "x": 58, "y": 0 },
+            "scale": { "x": 1, "y": 1}
+        },
+		{
+            "name": "skill_4",
+            "content": "skill_4",
+			"position": {"x": 250, "y": 290},
+            "origin": { "x": 50, "y": 50 },
+            "scale": { "x": 1, "y": 1}
+        },
+		{
+            "name": "idle_ghost",
+            "content": "idle_ghost",
+			"position": {"x": 250, "y": 100},
+            "origin": { "x": 0, "y": 0 },
+            "scale": { "x": 1, "y": 1}
+        },
+		{
+            "name": "vanish_ghost",
+            "content": "vanish_ghost",
+			"position": {"x": 250, "y": 100},
+            "origin": { "x": 0, "y": 0 },
+            "scale": { "x": 1, "y": 1}
+        },
+		{
+            "name": "appear_ghost",
+            "content": "appear_ghost",
+			"position": {"x": 250, "y": 100},
+            "origin": { "x": 0, "y": 0 },
+            "scale": { "x": 1, "y": 1}
+        },
+		{
+            "name": "background",
+            "content": "background",
+			"position": {"x": 0, "y": 0},
+            "origin": { "x": 0, "y": 0 },
+            "scale": { "x": 1.1, "y": 1}
+        }
+    ]
+}
