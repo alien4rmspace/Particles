@@ -1,12 +1,20 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <deque>
 #include <random>
 #include <cmath>
+#include <thread>
+#include <chrono>
+
 #include "Particle.h"
 #include "animation_handler.h"
 #include "sprite_manager.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
+#include "Skill_3.h"
+#include "Skill_4.h"
+
+const int SKILL_Y_VALUE = 495;
 
 using namespace sf;
 using namespace std;
@@ -27,20 +35,24 @@ private:
 
 	//vector for Particles
 	vector<Particle> m_particles;
+	vector<unique_ptr<GameObject>> gameObjects;
 
 	TextureManager textureManager;
-
 	SpriteManager spriteManager;
+	SoundManager soundManager;
 
 	AnimationHandler animationHandler;
-
-	SoundManager soundManager;
 
 	// Private functions for internal use only
 	void input();
 	void update(float dtAsSeconds);
 	void draw();
+	void ultimatePower();
+	void loopThread();
 
+	int skill_id = 0;
+	bool unit_tests_done = false;
+	bool background_sound_played = false;
 	bool skill_3_active = false;
 	bool skill_4_active = false;
 	bool skill_4_sound_played = false;
@@ -50,12 +62,11 @@ private:
 	bool ghost_appear = false;
 	bool ghost_appear_sound_played = false;
 	Vector2f mousePosition;
-	Vector2f lastClickedPosition;
+	Vector2f skillPosition;
 
 	// Debug Variables
 	bool debug_active = false;
 	RectangleShape rectangle;
-	RectangleShape square;
 	Font debugFont;
 	Text debugText;
 };

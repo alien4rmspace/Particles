@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Animation.h"
 #include "animation_handler.h"
 #include "sound_manager.h"
 #include <random>
