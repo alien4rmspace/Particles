@@ -66,6 +66,7 @@ bool Skill_4::collide() {
 	// Check if sprite's y axis goes out of view.
 	if (this->sprite.getPosition().y < 0) {
 		this->alive = false;
+		soundManager.playSound("explosion_sound");
 		return true;
 	}
 	return false;
